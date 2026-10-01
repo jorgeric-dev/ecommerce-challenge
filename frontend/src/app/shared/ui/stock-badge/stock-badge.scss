@@ -1,0 +1,23 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--app-shape-full);
+  font: var(--mat-sys-label-medium);
+  white-space: nowrap;
+}
+
+:host(.stock-badge--available) {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+:host(.stock-badge--low) {
+  background: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+:host(.stock-badge--out) {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}

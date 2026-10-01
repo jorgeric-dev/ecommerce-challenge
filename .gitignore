@@ -1,0 +1,23 @@
+## .NET
+bin/
+obj/
+TestResults/
+backend/coverage/
+*.user
+*.suo
+.vs/
+
+## Angular / Node
+node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.angular/
+
+## Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+## Local environment
+.env

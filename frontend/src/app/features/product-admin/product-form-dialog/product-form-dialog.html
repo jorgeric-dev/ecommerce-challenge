@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit product' : 'New product' }}</h2>
+
+<mat-dialog-content>
+  <form id="product-form" class="product-form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <mat-form-field>
+      <mat-label>SKU</mat-label>
+      <input matInput formControlName="sku" [maxlength]="constraints.skuMaxLength" />
+      <mat-hint>{{ isEdit ? 'The SKU cannot be changed.' : 'Letters, digits, hyphens and underscores.' }}</mat-hint>
+      <mat-error>{{ form.controls.sku | fieldError: 'SKU' }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" [maxlength]="constraints.nameMaxLength" />
+      <mat-error>{{ form.controls.name | fieldError: 'Name' }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="product-form__full">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="3" formControlName="description" [maxlength]="constraints.descriptionMaxLength"></textarea>
+      <mat-hint align="end">{{ form.controls.description.value.length }} / {{ constraints.descriptionMaxLength }}</mat-hint>
+      <mat-error>{{ form.controls.description | fieldError: 'Description' }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="categoryId">
+        @for (category of categories(); track category.id) {
+          <mat-option [value]="category.id">{{ category.name }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ form.controls.categoryId | fieldError: 'Category' }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Price</mat-label>
+      <span matTextPrefix>$&nbsp;</span>
+      <input matInput type="number" formControlName="price" step="0.01" [min]="constraints.minPrice" />
+      <mat-error>{{ form.controls.price | fieldError: 'Price' }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Stock</mat-label>
+      <input matInput type="number" formControlName="stock" step="1" min="0" />
+      <mat-error>{{ form.controls.stock | fieldError: 'Stock' }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Weight</mat-label>
+      <input matInput type="number" formControlName="weightKg" step="0.001" min="0" />
+      <span matTextSuffix>kg</span>
+      <mat-error>{{ form.controls.weightKg | fieldError: 'Weight' }}</mat-error>
+    </mat-form-field>
+  </form>
+
+  @if (saveError(); as message) {
+    <app-inline-alert>{{ message }}</app-inline-alert>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <app-button appearance="text" (click)="cancel()">Cancel</app-button>
+  <app-button icon="save" [loading]="saving()" (click)="save()">{{ isEdit ? 'Save changes' : 'Create product' }}</app-button>
+</mat-dialog-actions>

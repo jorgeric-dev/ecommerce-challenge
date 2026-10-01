@@ -1,0 +1,66 @@
+<app-page-header title="Orders" subtitle="Purchases placed through the shop.">
+  <app-search-field label="Filter by customer email" placeholder="jane@example.com" (search)="customerEmail.set($event)" />
+</app-page-header>
+
+@if (orders.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (loadError(); as message) {
+  <app-inline-alert>{{ message }}</app-inline-alert>
+} @else if (orders.hasValue()) {
+  @let page = orders.value();
+  @if (page.items.length === 0) {
+    <app-empty-state icon="receipt_long" title="No orders yet" message="Orders appear here once a purchase is completed." />
+  } @else {
+    <mat-card appearance="outlined" class="table-card">
+      <table mat-table [dataSource]="page.items">
+        <ng-container matColumnDef="orderNumber">
+          <th mat-header-cell *matHeaderCellDef>Order</th>
+          <td mat-cell *matCellDef="let order">{{ order.orderNumber }}</td>
+        </ng-container>
+        <ng-container matColumnDef="createdAtUtc">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let order">{{ order.createdAtUtc | date: 'medium' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="customer">
+          <th mat-header-cell *matHeaderCellDef>Customer</th>
+          <td mat-cell *matCellDef="let order">
+            <div>{{ order.customerName }}</div>
+            <div class="secondary">{{ order.customerEmail }}</div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="itemCount">
+          <th mat-header-cell *matHeaderCellDef>Lines</th>
+          <td mat-cell *matCellDef="let order">{{ order.itemCount }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalAmount">
+          <th mat-header-cell *matHeaderCellDef class="numeric">Total</th>
+          <td mat-cell *matCellDef="let order" class="numeric">{{ order.totalAmount | currency: 'USD' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let order"><app-order-status-chip [status]="order.status" /></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let order; columns: columns"
+          class="clickable-row"
+          tabindex="0"
+          (click)="open(order.id)"
+          (keydown.enter)="open(order.id)"
+        ></tr>
+      </table>
+      <mat-paginator
+        [length]="page.totalCount"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[10, 20, 50]"
+        (page)="onPage($event)"
+        aria-label="Select orders page"
+      />
+    </mat-card>
+  }
+}

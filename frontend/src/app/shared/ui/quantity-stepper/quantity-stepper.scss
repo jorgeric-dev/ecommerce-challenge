@@ -1,0 +1,13 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--app-shape-full);
+  background: var(--mat-sys-surface-container);
+}
+
+.quantity {
+  min-width: 2ch;
+  text-align: center;
+  font: var(--mat-sys-title-medium);
+}

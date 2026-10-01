@@ -1,0 +1,76 @@
+<app-page-header title="Products" subtitle="Create, edit, import and remove catalog products.">
+  <app-button appearance="outlined" icon="upload_file" (click)="openImport()">Import CSV</app-button>
+  <app-button icon="add" (click)="openCreate()">New product</app-button>
+</app-page-header>
+
+<section class="filters" aria-label="Product filters">
+  <app-search-field class="filters__search" label="Search products" placeholder="Name, SKU or description" (search)="search.set($event)" />
+  <app-category-select [(value)]="categoryId" />
+</section>
+
+@if (products.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (loadError(); as message) {
+  <app-inline-alert>{{ message }}</app-inline-alert>
+} @else if (products.hasValue()) {
+  @let page = products.value();
+  @if (page.items.length === 0) {
+    <app-empty-state icon="inventory_2" title="No products found" message="Create a product or import a CSV file to get started.">
+      <app-button icon="add" (click)="openCreate()">New product</app-button>
+    </app-empty-state>
+  } @else {
+    <mat-card appearance="outlined" class="table-card">
+      <table mat-table matSort [dataSource]="page.items" [matSortActive]="sortActive()" [matSortDirection]="sortDirection()" matSortDisableClear (matSortChange)="onSort($event)">
+        <ng-container matColumnDef="sku">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU</th>
+          <td mat-cell *matCellDef="let product">{{ product.sku }}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let product">
+            <div>{{ product.name }}</div>
+            @if (product.description) {
+              <div class="secondary description">{{ product.description }}</div>
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+          <td mat-cell *matCellDef="let product">{{ product.categoryName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header arrowPosition="before" class="numeric">Price</th>
+          <td mat-cell *matCellDef="let product" class="numeric">{{ product.price | currency: 'USD' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Stock</th>
+          <td mat-cell *matCellDef="let product"><app-stock-badge [stock]="product.stock" /></td>
+        </ng-container>
+        <ng-container matColumnDef="weight">
+          <th mat-header-cell *matHeaderCellDef class="numeric">Weight</th>
+          <td mat-cell *matCellDef="let product" class="numeric">{{ product.weightKg | number: '1.0-3' }} kg</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="actions-cell"><span class="visually-hidden">Actions</span></th>
+          <td mat-cell *matCellDef="let product" class="actions-cell">
+            <app-icon-button icon="edit" [label]="'Edit ' + product.name" (click)="openEdit(product)" />
+            <app-icon-button icon="delete" tone="danger" [label]="'Delete ' + product.name" (click)="delete(product)" />
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+      <mat-paginator
+        [length]="page.totalCount"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[10, 20, 50, 100]"
+        (page)="onPage($event)"
+        aria-label="Select products page"
+      />
+    </mat-card>
+  }
+}

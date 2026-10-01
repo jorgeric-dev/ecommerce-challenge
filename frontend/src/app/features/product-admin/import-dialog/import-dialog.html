@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Import products from CSV</h2>
+
+<mat-dialog-content class="import">
+  <p class="import__help">
+    Required columns: <code>name, sku, description, category, price, stock, weight_kg</code>. Existing SKUs are updated, new
+    SKUs are created and invalid rows are reported without stopping the import.
+  </p>
+
+  <div class="import__picker">
+    <input #fileInput type="file" accept=".csv,text/csv" hidden (change)="selectFile($event)" />
+    <app-button appearance="outlined" icon="upload_file" (click)="fileInput.click()">Choose file</app-button>
+    <span class="import__file-name">{{ file()?.name ?? 'No file selected' }}</span>
+  </div>
+
+  @if (error(); as message) {
+    <app-inline-alert>{{ message }}</app-inline-alert>
+  }
+
+  @if (result(); as summary) {
+    <app-inline-alert [tone]="summary.failed > 0 ? 'info' : 'success'">
+      Processed {{ summary.totalRows }} row(s): {{ summary.created }} created, {{ summary.updated }} updated,
+      {{ summary.failed }} rejected, {{ summary.skipped }} blank row(s) skipped.
+    </app-inline-alert>
+
+    @if (summary.errors.length > 0) {
+      <h3>Rejected rows</h3>
+      <mat-list class="import__issues">
+        @for (issue of summary.errors; track issue.lineNumber) {
+          <mat-list-item>
+            <mat-icon matListItemIcon class="import__icon--error">error</mat-icon>
+            <span matListItemTitle>Line {{ issue.lineNumber }}{{ issue.sku ? ' · ' + issue.sku : '' }}</span>
+            <span matListItemLine>{{ describe(issue) }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    }
+
+    @if (summary.warnings.length > 0) {
+      <h3>Warnings</h3>
+      <mat-list class="import__issues">
+        @for (issue of summary.warnings; track issue.lineNumber) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>warning</mat-icon>
+            <span matListItemTitle>Line {{ issue.lineNumber }}{{ issue.sku ? ' · ' + issue.sku : '' }}</span>
+            <span matListItemLine>{{ describe(issue) }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    }
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <app-button appearance="text" (click)="close()">Close</app-button>
+  <app-button icon="cloud_upload" [disabled]="!file()" [loading]="uploading()" (click)="upload()">Import</app-button>
+</mat-dialog-actions>

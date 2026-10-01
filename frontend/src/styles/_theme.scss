@@ -1,0 +1,43 @@
+@use '@angular/material' as mat;
+
+$app-theme: (
+  color: (
+    primary: mat.$violet-palette,
+    tertiary: mat.$orange-palette,
+  ),
+  typography: (
+    plain-family: Roboto,
+    brand-family: Roboto,
+  ),
+  density: 0,
+);
+
+@mixin design-tokens() {
+  --app-shape-small: 8px;
+  --app-shape-medium: 12px;
+  --app-shape-large: 16px;
+  --app-shape-full: 999px;
+  --app-content-max-width: 1280px;
+}
+
+@mixin component-overrides() {
+  @include mat.card-overrides(
+    (
+      elevated-container-shape: var(--app-shape-large),
+      outlined-container-shape: var(--app-shape-large),
+    )
+  );
+
+  @include mat.dialog-overrides(
+    (
+      container-shape: var(--app-shape-large),
+    )
+  );
+
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-surface-container),
+      container-text-color: var(--mat-sys-on-surface),
+    )
+  );
+}

@@ -1,0 +1,52 @@
+@use '@angular/material' as mat;
+
+.import {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.import__help {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.import__picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.import__file-name {
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+h3 {
+  font: var(--mat-sys-title-small);
+  margin: 0;
+}
+
+.import__issues {
+  @include mat.list-overrides(
+    (
+      list-item-supporting-text-color: var(--mat-sys-on-surface-variant),
+    )
+  );
+
+  max-height: 240px;
+  overflow: auto;
+  border-radius: var(--app-shape-medium);
+  background: var(--mat-sys-surface-container-low);
+}
+
+.import__icon--error {
+  @include mat.list-overrides(
+    (
+      list-item-leading-icon-color: var(--mat-sys-error),
+    )
+  );
+}

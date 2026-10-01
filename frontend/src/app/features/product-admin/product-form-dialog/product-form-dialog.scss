@@ -1,0 +1,17 @@
+.product-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 12px;
+  padding-top: 8px;
+}
+
+.product-form__full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .product-form {
+    grid-template-columns: 1fr;
+  }
+}

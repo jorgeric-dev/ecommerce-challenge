@@ -1,0 +1,48 @@
+@use '@angular/material' as mat;
+
+@mixin data-table() {
+  .table-card {
+    overflow: auto;
+
+    @include mat.table-overrides(
+      (
+        background-color: transparent,
+        header-headline-color: var(--mat-sys-on-surface-variant),
+      )
+    );
+
+    @include mat.paginator-overrides(
+      (
+        container-background-color: transparent,
+      )
+    );
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .numeric {
+    text-align: right;
+  }
+
+  .secondary {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .clickable-row {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--mat-sys-surface-container-high);
+      outline: none;
+    }
+  }
+
+  .actions-cell {
+    text-align: right;
+    white-space: nowrap;
+  }
+}

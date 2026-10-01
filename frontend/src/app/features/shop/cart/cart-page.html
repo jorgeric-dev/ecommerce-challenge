@@ -1,0 +1,52 @@
+<app-page-header title="Shopping cart" [subtitle]="cart.itemCount() + ' item(s)'">
+  @if (!cart.isEmpty()) {
+    <app-button appearance="text" icon="remove_shopping_cart" tone="danger" (click)="cart.clear()">Empty cart</app-button>
+  }
+</app-page-header>
+
+@if (cart.isEmpty()) {
+  <app-empty-state icon="shopping_cart" title="Your cart is empty" message="Find something you like in the shop.">
+    <app-button routerLink="/shop" icon="storefront">Continue shopping</app-button>
+  </app-empty-state>
+} @else {
+  <div class="cart">
+    <mat-card appearance="outlined" class="cart__items">
+      <mat-card-content>
+        @for (item of cart.items(); track item.productId; let last = $last) {
+          <div class="cart__item">
+            <div class="cart__item-info">
+              <span class="cart__item-name">{{ item.name }}</span>
+              <span class="cart__item-meta">{{ item.sku }} · {{ item.unitPrice | currency: 'USD' }} each</span>
+            </div>
+            <app-quantity-stepper
+              [value]="item.quantity"
+              [max]="item.maxQuantity"
+              (valueChange)="cart.updateQuantity(item.productId, $event)"
+            />
+            <span class="cart__item-total">{{ item.unitPrice * item.quantity | currency: 'USD' }}</span>
+            <app-icon-button icon="delete" tone="danger" [label]="'Remove ' + item.name" (click)="cart.remove(item.productId)" />
+          </div>
+          @if (!last) {
+            <mat-divider />
+          }
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="cart__summary">
+      <mat-card-content>
+        <h2>Order summary</h2>
+        <div class="cart__summary-row">
+          <span>Items</span>
+          <span>{{ cart.itemCount() }}</span>
+        </div>
+        <div class="cart__summary-row cart__summary-row--total">
+          <span>Total</span>
+          <span>{{ cart.total() | currency: 'USD' }}</span>
+        </div>
+        <app-button routerLink="/shop/checkout" icon="lock">Proceed to checkout</app-button>
+        <app-button appearance="text" routerLink="/shop">Continue shopping</app-button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+}

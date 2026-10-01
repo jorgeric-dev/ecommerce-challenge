@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--app-shape-medium);
+  font: var(--mat-sys-body-medium);
+}
+
+:host(.inline-alert--error) {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+:host(.inline-alert--info) {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+:host(.inline-alert--success) {
+  background: var(--mat-sys-tertiary-container);
+  color: var(--mat-sys-on-tertiary-container);
+}
+
+.inline-alert__content {
+  flex: 1;
+  padding-top: 2px;
+}

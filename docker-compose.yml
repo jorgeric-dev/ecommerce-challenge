@@ -1,0 +1,46 @@
+name: ecommerce
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-ECommerce!Passw0rd}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      ConnectionStrings__ECommerce: "Server=sqlserver,1433;Database=ECommerce;User Id=sa;Password=${MSSQL_SA_PASSWORD:-ECommerce!Passw0rd};TrustServerCertificate=True"
+      Database__ApplyMigrationsOnStartup: "true"
+      Database__SeedSampleProducts: "true"
+      Swagger__Enabled: "true"
+      Cors__AllowedOrigins__0: "http://localhost:4200"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: on-failure
+
+  web:
+    build:
+      context: ./frontend
+    depends_on:
+      - api
+    ports:
+      - "8081:80"
+
+volumes:
+  sqlserver-data:

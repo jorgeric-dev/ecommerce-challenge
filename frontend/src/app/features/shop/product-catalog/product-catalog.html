@@ -1,0 +1,48 @@
+<app-page-header title="Shop" subtitle="Browse the catalog and add products to your cart." />
+
+<section class="filters" aria-label="Product filters">
+  <app-search-field
+    class="filters__search"
+    label="Search products"
+    placeholder="Name, SKU or description"
+    [value]="search()"
+    (search)="search.set($event)"
+  />
+  <app-category-select [(value)]="categoryId" />
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Sort by</mat-label>
+    <mat-select [(value)]="sortId">
+      @for (option of sortOptions; track option.id) {
+        <mat-option [value]="option.id">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-slide-toggle [checked]="inStockOnly()" (change)="inStockOnly.set($event.checked)">In stock only</mat-slide-toggle>
+</section>
+
+@if (products.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (loadError(); as message) {
+  <app-inline-alert>{{ message }}</app-inline-alert>
+} @else if (products.hasValue()) {
+  @let page = products.value();
+  @if (page.items.length === 0) {
+    <app-empty-state icon="search_off" title="No products found" message="Try a different search term or remove some filters." />
+  } @else {
+    <section class="grid" aria-label="Products">
+      @for (product of page.items; track product.id) {
+        <app-product-card [product]="product" [inCart]="cart.quantityOf(product.id)" (addToCart)="addToCart($event)" />
+      }
+    </section>
+    <mat-paginator
+      [length]="page.totalCount"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPage($event)"
+      aria-label="Select catalog page"
+    />
+  }
+}

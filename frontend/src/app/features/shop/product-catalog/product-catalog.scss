@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filters__search {
+  flex: 1 1 280px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+mat-paginator {
+  @include mat.paginator-overrides(
+    (
+      container-background-color: transparent,
+    )
+  );
+}

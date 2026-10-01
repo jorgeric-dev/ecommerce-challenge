@@ -1,0 +1,32 @@
+@use 'table';
+
+@include table.data-table();
+
+.order {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.order__info h2 {
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0;
+}
+
+.order__info p {
+  margin: 4px 0 16px;
+  word-break: break-word;
+}
+
+.total {
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-primary);
+}
+
+@media (max-width: 840px) {
+  .order {
+    grid-template-columns: 1fr;
+  }
+}

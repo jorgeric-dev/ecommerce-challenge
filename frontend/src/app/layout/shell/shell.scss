@@ -1,0 +1,57 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.shell__toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 8px;
+}
+
+.shell__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mat-sys-primary);
+  font: var(--mat-sys-title-large);
+  text-decoration: none;
+  margin-right: 16px;
+}
+
+.shell__nav {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+}
+
+.shell__link--active {
+  @include mat.button-overrides(
+    (
+      text-label-text-color: var(--mat-sys-on-secondary-container),
+      text-state-layer-color: var(--mat-sys-on-secondary-container),
+    )
+  );
+
+  background: var(--mat-sys-secondary-container);
+}
+
+.shell__content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--app-content-max-width);
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .shell__link-label,
+  .shell__brand span {
+    display: none;
+  }
+}
