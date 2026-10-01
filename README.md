@@ -154,6 +154,8 @@ npx nswag openapi2csclient /input:backend/contracts/ECommerce.Api.json /output:E
 
 ## 4. CSV import rules
 
+> **Note:** the sample file was provided by LoanPro and downloaded on 2026-09-30.
+
 The sample file deliberately contains dirty data. The importer processes the file row by row, **never aborts on a bad row**, saves all valid rows in one unit of work and returns a report with the line number, SKU and reason of every rejected row.
 
 | Case in `file_example.csv` | Decision |
